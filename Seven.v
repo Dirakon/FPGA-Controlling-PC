@@ -12,16 +12,16 @@ module Seven_segment_LED_Display_Controller(
 
 always@(posedge clock)
 begin
-    one_second_counter = reset ? 'd0 : (one_second_counter == 500000000) ? 'd0 : (one_second_counter + 1);
-    if (one_second_counter[8])
+    one_second_counter <= reset ? 'd0 : (one_second_counter == 500000000) ? 'd0 : (one_second_counter + 1);
+    if (one_second_counter[14])
     begin
-		Anode_Activate = 'b01;
-	   LED_out = display_1;
+		Anode_Activate <= 'b01;
+	   LED_out <= display_1;
     end
     else
     begin
-		Anode_Activate = 'b10;
-	   LED_out = display_2;
+		Anode_Activate <= 'b10;
+	   LED_out <= display_2;
     end
 end
 
