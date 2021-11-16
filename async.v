@@ -45,7 +45,7 @@ reg [7:0] TxD_shift = 0;
 always @(posedge clk)
 begin
 	if(TxD_ready & TxD_start)
-		TxD_shift <= !assert_pressed?~TxD_data:'b11111111;
+		TxD_shift <= !assert_pressed?TxD_data:'b11111111;
 	else
 	if(TxD_state[3] & BitTick)
 		TxD_shift <= (TxD_shift >> 1);

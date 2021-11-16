@@ -147,25 +147,25 @@ case (state)
 		value_dynamic = ~value;
 				display_1 = 7'b0000110;	// <-
 				display_2 = 7'b0111111;	
-			data_to_be_sent = {3'b001,value_dynamic};
+			data_to_be_sent = (!increment_raw)?(invert?8'b100_01010:8'b100_01011):{3'b001,value_dynamic};
 		  end
 		  1:begin // mouse_up
 		value_dynamic = ~value;
 				display_1 = 7'b1011000;	// ^
 				display_2 = 7'b1001100;	// |
-			data_to_be_sent = {3'b010,value_dynamic};
+			data_to_be_sent = (!increment_raw)?(invert?8'b100_01010:8'b100_01011):{3'b010,value_dynamic};
 		  end
 		  2:begin // mouse_right
 		value_dynamic = ~value;
 				display_1 = 7'b0111111;	// ->
 				display_2 = 7'b0110000;	
-			data_to_be_sent = {3'b000,value_dynamic};
+			data_to_be_sent = (!increment_raw)?(invert?8'b100_01010:8'b100_01011):{3'b000,value_dynamic};
 		  end
 		  3:begin // mouse_down
 		value_dynamic = ~value;
 				display_1 = 7'b1100001;	// |
 				display_2 = 7'b1000011;	// v
-			data_to_be_sent = {3'b011,value_dynamic};
+			data_to_be_sent = (!increment_raw)?(invert?8'b100_01010:8'b100_01011):{3'b011,value_dynamic};
 		  end
 		  6:begin // backspace
 				display_1 = 7'b1111111;	// empty display

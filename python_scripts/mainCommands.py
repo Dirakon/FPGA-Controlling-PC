@@ -30,11 +30,11 @@ def move_mouse_left(value):
 
 
 def move_mouse_up(value):
-    move_mouse_general(0, value)
+    move_mouse_general(0, -value)
 
 
 def move_mouse_down(value):
-    move_mouse_general(0, -value)
+    move_mouse_general(0, value)
 
 
 def activate_advanced_command(value):
@@ -45,9 +45,10 @@ def activate_advanced_command(value):
 
 
 def input_english_letter(value):
-    # 26 letters + 6 special symbols = 32 options
+    # 26 letters + 6 special symbols = 32 options     hello world!!!!!!!!!!!!!
     alphabet = [chr(ord('a') + i) for i in range(26)]
-    for specialSymbol in [' ', '.', ',', '!', '?', ':']:
+    alphabet.insert(0,' ')
+    for specialSymbol in ['.', ',', '!', '?', ':']:
         alphabet.append(specialSymbol)
     pyautogui.press(alphabet[value])
 

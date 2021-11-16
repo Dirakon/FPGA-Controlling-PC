@@ -51,14 +51,14 @@ def scroll_down():
 commands = [
     stop_execution,  # 0
     generate_mouse_position_function(0.5, 0.5),  # 1 (mid)
-    generate_mouse_position_function(0.5, 1),  # 2 (n)
-    generate_mouse_position_function(0.5, 0.001),  # 3 (s)
+    generate_mouse_position_function(0.5, 0.001),  # 2 (n)
+    generate_mouse_position_function(0.5, 0.999),  # 3 (s)
     generate_mouse_position_function(1, 0.5),  # 4 (e)
     generate_mouse_position_function(0.001, 0.5),  # 5 (w)
-    generate_mouse_position_function(1, 0.001),  # 6 (se)
-    generate_mouse_position_function(1, 0.999),  # 7 (ne)
-    generate_mouse_position_function(0.001, 0.005),  # 8 (sw)
-    generate_mouse_position_function(0.001, 1),  # 9 (nw)
+    generate_mouse_position_function(1, 0.999),  # 6 (se)
+    generate_mouse_position_function(1, 0.111),  # 7 (ne)
+    generate_mouse_position_function(0.001, 0.995),  # 8 (sw)
+    generate_mouse_position_function(0.001, 0),  # 9 (nw)00000011aaabbbcccdddeeefgghijj99910101010101010111131313131313131313131
     left_click,  # 10
     right_click,  # 11
     middle_click,  # 12
