@@ -6,9 +6,6 @@
 // TX: 8-bit data, 2 stop, no-parity
 // RX: 8-bit data, 1 stop, no-parity (the receiver can accept more stop bits of course)
 
-//`define SIMULATION   // in this mode, TX outputs one bit per clock cycle
-                       // and RX receives one bit per clock cycle (for fast simulations)
-
 ////////////////////////////////////////////////////////
 module async_transmitter(
 	input clk,
@@ -29,13 +26,9 @@ generate
 	if(ClkFrequency<Baud*8 && (ClkFrequency % Baud!=0)) ASSERTION_ERROR PARAMETER_OUT_OF_RANGE("Frequency incompatible with requested Baud rate");
 endgenerate
 
-////////////////////////////////
-`ifdef SIMULATION
-wire BitTick = 1'b1;  // output one bit per clock cycle
-`else
 wire BitTick;
 BaudTickGen #(ClkFrequency, Baud) tickgen(.clk(clk), .enable(TxD_busy), .tick(BitTick));
-`endif
+
 
 reg [3:0] TxD_state = 0;
 wire TxD_ready = (TxD_state==0);
@@ -75,14 +68,7 @@ endmodule
 module async_receiver(
 	input clk,
 	input RxD,
-	output reg RxD_data_ready = 0,
-	output reg [7:0] RxD_data = 0,  // data received, valid only (for one clock cycle) when RxD_data_ready is asserted
-
-	// We also detect if a gap occurs in the received stream of characters
-	// That can be useful if multiple characters are sent in burst
-	//  so that multiple characters can be treated as a "packet"
-	output RxD_idle,  // asserted when no data has been received for a while
-	output reg RxD_endofpacket = 0  // asserted for one clock cycle when a packet has been detected (i.e. RxD_idle is going high)
+	output reg ready_to_transmit = 0
 );
 
 parameter ClkFrequency = 50000000; // 50MHz
@@ -100,11 +86,6 @@ endgenerate
 ////////////////////////////////
 reg [3:0] RxD_state = 0;
 
-`ifdef SIMULATION
-wire RxD_bit = RxD;
-wire sampleNow = 1'b1;  // receive one bit per clock cycle
-
-`else
 wire OversamplingTick;
 BaudTickGen #(ClkFrequency, Baud, Oversampling) tickgen(.clk(clk), .enable(1'b1), .tick(OversamplingTick));
 
@@ -134,7 +115,7 @@ localparam l2o = log2(Oversampling);
 reg [l2o-2:0] OversamplingCnt = 0;
 always @(posedge clk) if(OversamplingTick) OversamplingCnt <= (RxD_state==0) ? 1'd0 : OversamplingCnt + 1'd1;
 wire sampleNow = OversamplingTick && (OversamplingCnt==Oversampling/2-1);
-`endif
+
 
 // now we can accumulate the RxD bits in a shift-register
 always @(posedge clk)
@@ -154,23 +135,10 @@ case(RxD_state)
 endcase
 
 always @(posedge clk)
-if(sampleNow && RxD_state[3]) RxD_data <= {RxD_bit, RxD_data[7:1]};
-
-//reg RxD_data_error = 0;
-always @(posedge clk)
 begin
-	RxD_data_ready <= (sampleNow && RxD_state==4'b0010 && RxD_bit);  // make sure a stop bit is received
-	//RxD_data_error <= (sampleNow && RxD_state==4'b0010 && ~RxD_bit);  // error if a stop bit is not received
+	ready_to_transmit <= (sampleNow && RxD_state==4'b0010 && RxD_bit);  // make sure a stop bit is received
 end
 
-`ifdef SIMULATION
-assign RxD_idle = 0;
-`else
-reg [l2o+1:0] GapCnt = 0;
-always @(posedge clk) if (RxD_state!=0) GapCnt<=0; else if(OversamplingTick & ~GapCnt[log2(Oversampling)+1]) GapCnt <= GapCnt + 1'h1;
-assign RxD_idle = GapCnt[l2o+1];
-always @(posedge clk) RxD_endofpacket <= OversamplingTick & ~GapCnt[l2o+1] & &GapCnt[l2o:0];
-`endif
 
 endmodule
 

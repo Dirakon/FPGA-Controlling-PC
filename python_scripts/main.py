@@ -73,14 +73,18 @@ def get_fake_data(wait_value=0.5):
 def main():
     setup_resolution()
     serial_port = open_serial_port_to_fpga()
-    for i in range(100):
-        if stop_execution_flag:
-            break
-        #value = get_fake_data()
-        value = get_data_from_fpga(serial_port)
-        print([get_specific_bit_in_byte(value, i) for i in range(7,-1,-1)])
-        translate_fpga_data_to_command(value)
-    serial_port.close()
+    try:
+        while True:
+            if stop_execution_flag:
+                break
+            # value = get_fake_data()
+            value = get_data_from_fpga(serial_port)
+            print([get_specific_bit_in_byte(value, i) for i in range(7, -1, -1)])
+            translate_fpga_data_to_command(value)
+    except Exception:
+        print("cycle is closed!")
+    finally:
+        serial_port.close()
 
 
 if __name__ == '__main__':
@@ -95,6 +99,6 @@ if __name__ == '__main__':
     0b10000101,
     0b10000110,
     0b10000111,
-    0b10001000,3131313131313131313131313131313131313131313131::::
+    0b10001000,
     0b10001001,
 '''

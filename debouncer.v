@@ -1,53 +1,53 @@
 
 
 module button_debouncer
-//! Параметры
+//! Parameters
 #(
-    parameter		CNT_WIDTH = 16
+    parameter		COUNTER_WIDTH = 16
 )
-//! Порты
+
 (
-    input clk_i,
-	input rst_i,
-    input sw_i,  
+    input clk,
+	 input reset,
+    input raw_button_input,  
  
-    output reg sw_state_o,  
-    output reg sw_down_o,  
-    output reg sw_up_o   
+    output reg button_state,  
+    output reg on_button_down,  
+    output reg on_button_up   
 );
  
-//! Синхронизируем вход с текущим тактовым доменом.
+//! Synchronizing input to our clk domain
 reg	 [1:0] sw_r;
-always @ (posedge rst_i or posedge clk_i)
-if (rst_i)
+always @ (posedge reset or posedge clk)
+if (reset)
 		sw_r   	<= 2'b00;
 else
-		sw_r    <= {sw_r[0], ~sw_i};
+		sw_r    <= {sw_r[0], ~raw_button_input};
  
-reg [CNT_WIDTH-1:0] sw_count;
+reg [COUNTER_WIDTH-1:0] counter;
  
  
-wire sw_change_f = (sw_state_o != sw_r[1]);
-//wire sw_cnt_max = (sw_count == {CNT_WIDTH{1'b1}}) ;	
-wire sw_cnt_max = &sw_count;	
+wire sw_change_f = (button_state != sw_r[1]);
+
+wire is_counter_full = &counter;	
  
-always @(posedge rst_i or posedge clk_i)
-if (rst_i)
+always @(posedge reset or posedge clk)
+if (reset)
 begin
-	sw_count <= 0;
-	sw_state_o <= 0;
+	counter <= 0;
+	button_state <= 0;
 end 
 else if(sw_change_f)	
    	begin
-		sw_count <= sw_count + 'd1;  
-		if(sw_cnt_max) sw_state_o <= ~sw_state_o;  
+		counter <= counter + 'd1;  
+		if(is_counter_full) button_state <= ~button_state;  
 	end
-	else  sw_count <= 0;  
+	else  counter <= 0;  
  
-always @(posedge clk_i)
+always @(posedge clk)
 begin
-	sw_down_o <= sw_change_f & sw_cnt_max & ~sw_state_o;
-	sw_up_o <= sw_change_f & sw_cnt_max &  sw_state_o;
+	on_button_down <= sw_change_f & is_counter_full & ~button_state;
+	on_button_up <= sw_change_f & is_counter_full &  button_state;
 end
  
 endmodule

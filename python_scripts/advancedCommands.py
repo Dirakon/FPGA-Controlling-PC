@@ -58,11 +58,11 @@ commands = [
     generate_mouse_position_function(1, 0.999),  # 6 (se)
     generate_mouse_position_function(1, 0.111),  # 7 (ne)
     generate_mouse_position_function(0.001, 0.995),  # 8 (sw)
-    generate_mouse_position_function(0.001, 0),  # 9 (nw)00000011aaabbbcccdddeeefgghijj99910101010101010111131313131313131313131
+    generate_mouse_position_function(0.001, 0),  # 9 (nw)
     left_click,  # 10
     right_click,  # 11
     middle_click,  # 12
     scroll_up,  # 13
-    scroll_down , # 14
-    backspace # 15
+    scroll_down,  # 14!
+    backspace  # 15
 ]

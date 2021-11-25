@@ -45,7 +45,8 @@ def activate_advanced_command(value):
 
 
 def input_english_letter(value):
-    # 26 letters + 6 special symbols = 32 options     hello world!!!!!!!!!!!!!
+    # 26 letters + 6 special symbols = 32 options
+    # "hello world!!!!!!!!!!!!!"-- this hello world has been written from FPGA
     alphabet = [chr(ord('a') + i) for i in range(26)]
     alphabet.insert(0,' ')
     for specialSymbol in ['.', ',', '!', '?', ':']:
