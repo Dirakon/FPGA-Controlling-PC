@@ -1,5 +1,4 @@
 import pyautogui
-
 import main
 
 screen_width: float

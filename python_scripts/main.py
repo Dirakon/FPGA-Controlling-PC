@@ -1,6 +1,5 @@
 import serial
 import time
-import pyautogui
 from screeninfo import get_monitors
 
 import mainCommands

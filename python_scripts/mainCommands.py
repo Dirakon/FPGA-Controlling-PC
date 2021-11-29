@@ -1,4 +1,3 @@
-import main
 import pyautogui
 import advancedCommands
 
